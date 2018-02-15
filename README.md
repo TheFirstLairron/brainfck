@@ -1,4 +1,4 @@
-# brainfck:
+# RustFuck:
 A brainfuck interpreter built in rust as a learning exercise.
 
 # Specification:
