@@ -1,0 +1,6 @@
+[package]
+name = "brainfck"
+version = "0.1.0"
+authors = ["TheFirstLairron <zrwall@hotmail.com>"]
+
+[dependencies]
