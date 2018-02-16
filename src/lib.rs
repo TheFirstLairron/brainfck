@@ -1,3 +1,14 @@
+enum Token {
+    LeftShift,
+    RightShift,
+    Increment,
+    Decrement,
+    Read,
+    Write,
+    RightLoop,
+    LeftLoop,
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
