@@ -1,8 +1,7 @@
 # RustFuck:
-A brainfuck interpreter built in rust as a learning exercise.
+A brainfuck interpreter built in Rust.
 
-# Specification:
-We can use this [specification](https://github.com/brain-lang/brainfuck/blob/master/brainfuck.md "Spec") to make ambiguous areas a little more clear.  
+[Brainfuck Language Specification](https://github.com/brain-lang/brainfuck/blob/master/brainfuck.md "Spec")
 
 # Commands:
 * cargo run: Will execute the executable generated from ./src/bin/main.rs
