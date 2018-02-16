@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/TheFirstLairron/rustfuck.svg?branch=master)](https://travis-ci.org/TheFirstLairron/rustfuck)
+
 # RustFuck:
 A brainfuck interpreter built in Rust.
 
