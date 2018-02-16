@@ -5,7 +5,7 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "cargo build",
+            "label": "build",
             "command": "cargo",
             "args": [
                 "build"
@@ -20,7 +20,7 @@
         },
         {
             "type": "shell",
-            "label": "cargo test",
+            "label": "test",
             "command": "cargo",
             "args": [
                 "test"
@@ -28,6 +28,7 @@
             "problemMatcher": [
                 "$rustc"
             ],
+            "dependsOn": "build",
             "group": {
                 "kind": "test",
                 "isDefault": true
