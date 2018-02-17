@@ -1,4 +1,5 @@
 mod interpreter;
+mod tape;
 
 #[cfg(test)]
 mod tests {
