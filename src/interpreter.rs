@@ -1,6 +1,5 @@
-#[derive(PartialEq)]
-#[derive(Debug)]
-pub enum State {
+#[derive(PartialEq, Debug)]
+pub enum Command {
     LeftShift,
     RightShift,
     Increment,
@@ -11,16 +10,16 @@ pub enum State {
     LeftLoop,
 }
 
-pub fn tokenize(token: &str) -> Option<State> {
+pub fn tokenize(token: &str) -> Option<Command> {
     match token {
-        "<" => Some(State::LeftShift),
-        ">" => Some(State::RightShift),
-        "+" => Some(State::Increment),
-        "-" => Some(State::Decrement),
-        "," => Some(State::Read),
-        "." => Some(State::Write),
-        "[" => Some(State::RightLoop),
-        "]" => Some(State::LeftLoop),
-        _ => None
+        "<" => Some(Command::LeftShift),
+        ">" => Some(Command::RightShift),
+        "+" => Some(Command::Increment),
+        "-" => Some(Command::Decrement),
+        "," => Some(Command::Read),
+        "." => Some(Command::Write),
+        "[" => Some(Command::RightLoop),
+        "]" => Some(Command::LeftLoop),
+        _ => None,
     }
 }
