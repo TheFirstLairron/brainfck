@@ -1,74 +1,50 @@
-mod tests {
-
-// TODO: Extract to its own file
-#[derive(PartialEq)]
-#[derive(Debug)]
-enum Token {
-    LeftShift,
-    RightShift,
-    Increment,
-    Decrement,
-    Read,
-    Write,
-    RightLoop,
-    LeftLoop,
-}
-
-// TODO: Extract to proper file
-fn tokenize(token: &str) -> Token {
-    match token {
-        "<" => Token::LeftShift,
-        ">" => Token::RightShift,
-        "+" => Token::Increment,
-        "-" => Token::Decrement,
-        "," => Token::Read,
-        "." => Token::Write,
-        "[" => Token::RightLoop,
-        "]" => Token::LeftLoop,
-
-        // Is there something better to return as default?
-        _ => Token::LeftShift
-    }
-}
+mod interpreter;
 
 #[cfg(test)]
+mod tests {
+    use super::*;
     #[test]
     fn tokenize_leftshift(){
-        assert_eq!(tokenize("<"), Token::LeftShift);
+        assert_eq!(interpreter::tokenize("<"), Some(interpreter::State::LeftShift));
     }
     
     #[test]
     fn tokenize_rightshift(){
-        assert_eq!(tokenize(">"), Token::RightShift);
+        assert_eq!(interpreter::tokenize(">"), Some(interpreter::State::RightShift));
     }
 
     #[test]
     fn tokenize_increment(){
-        assert_eq!(tokenize("+"), Token::Increment);
+        assert_eq!(interpreter::tokenize("+"), Some(interpreter::State::Increment));
     }
 
     #[test]
     fn tokenize_decrement(){
-        assert_eq!(tokenize("-"), Token::Decrement);
+        assert_eq!(interpreter::tokenize("-"), Some(interpreter::State::Decrement));
     }
 
     #[test]
     fn tokenize_read(){
-        assert_eq!(tokenize(","), Token::Read);
+        assert_eq!(interpreter::tokenize(","), Some(interpreter::State::Read));
     }
 
     #[test]
     fn tokenize_write(){
-        assert_eq!(tokenize("."), Token::Write);
+        assert_eq!(interpreter::tokenize("."), Some(interpreter::State::Write));
     }
 
     #[test]
     fn tokenize_rightloop(){
-        assert_eq!(tokenize("["), Token::RightLoop);
+        assert_eq!(interpreter::tokenize("["), Some(interpreter::State::RightLoop));
     }
 
     #[test]
     fn tokenize_leftloop(){
-        assert_eq!(tokenize("]"), Token::LeftLoop);
+        assert_eq!(interpreter::tokenize("]"), Some(interpreter::State::LeftLoop));
+    }
+
+    #[test]
+    fn tokenize_badcharacter(){
+        assert_eq!(interpreter::tokenize("o"), None);
     }
 }
