@@ -1,5 +1,6 @@
 use std::io;
-use std::io::Read;
+use std::io::BufReader;
+use std::io::prelude::*;
 
 #[derive(PartialEq, Debug)]
 pub enum Command {
@@ -123,13 +124,18 @@ impl Tape {
     }
 
     pub fn read_byte() -> Option<u8> {
+        let mut buffer = String::new();
+
         let stdin = io::stdin();
         let handle = stdin.lock();
-        let mut bytes = handle.bytes();
-        let input = bytes.nth(0);
+        let mut reader = BufReader::new(handle);
+        match reader.read_line(&mut buffer) {
+            Ok(_) => {
+                let result = buffer.bytes().nth(0);
 
-        match input {
-            Some(Ok(value)) => Some(value),
+                result
+            }
+            // Fix this stupidity
             _ => None,
         }
     }

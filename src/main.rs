@@ -9,6 +9,6 @@ fn main() {
     println!("{}", *tape.value_at_index(tape.current_index()).unwrap());
     tape.process_token(get_command(",").unwrap());
     println!("{}", *tape.value_at_index(tape.current_index()).unwrap());
-    tape.process_token(get_command(",").unwrap());
+    tape.process_token(get_command("+").unwrap());
     println!("{}", *tape.value_at_index(tape.current_index()).unwrap());
 }
