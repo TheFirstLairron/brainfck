@@ -1,3 +1,7 @@
+use std::io;
+use std::io::BufReader;
+use std::io::prelude::*;
+
 #[derive(PartialEq, Debug)]
 pub enum Command {
     LeftShift,
@@ -24,7 +28,7 @@ pub fn get_command(token: &str) -> Option<Command> {
     }
 }
 
-pub enum Failure {
+pub enum CommandFailure {
     MemoryOverstep,
     ReadFailure,
     WriteFailure,
@@ -59,7 +63,7 @@ impl Tape {
         self.cells.get(index)
     }
 
-    pub fn process_token(&mut self, token: Command) -> Result<(), Failure> {
+    pub fn process_token(&mut self, token: Command) -> Result<(), CommandFailure> {
         const MAX_VALUE: u8 = 255;
         const MIN_VALUE: u8 = 0;
         match token {
@@ -85,7 +89,7 @@ impl Tape {
             }
             Command::LeftShift => {
                 if self.current_index() == 0 {
-                    Result::Err(Failure::MemoryUnderstep)
+                    Result::Err(CommandFailure::MemoryUnderstep)
                 } else {
                     self.pointer -= 1;
                     Result::Ok(())
@@ -93,16 +97,46 @@ impl Tape {
             }
             Command::RightShift => {
                 if self.pointer == self.cells.len() - 1 {
-                    Result::Err(Failure::MemoryOverstep)
+                    Result::Err(CommandFailure::MemoryOverstep)
                 } else {
                     self.pointer += 1;
                     Result::Ok(())
                 }
             }
-            Command::Read => Result::Ok(()),
+            Command::Read => {
+                let value = Self::read_byte();
+                match value {
+                    Some(value) => {
+                        self.store_byte(value);
+                        Result::Ok(())
+                    }
+                    None => Result::Err(CommandFailure::ReadFailure),
+                }
+            }
             Command::Write => Result::Ok(()),
             Command::LeftLoop => Result::Ok(()),
             Command::RightLoop => Result::Ok(()),
+        }
+    }
+
+    fn store_byte(&mut self, value: u8) {
+        self.cells[self.pointer] = value;
+    }
+
+    fn read_byte() -> Option<u8> {
+        let mut buffer = String::new();
+
+        let stdin = io::stdin();
+        let handle = stdin.lock();
+        let mut reader = BufReader::new(handle);
+        match reader.read_line(&mut buffer) {
+            Ok(_) => {
+                let result = buffer.bytes().nth(0);
+
+                result
+            }
+            // Fix this stupidity
+            _ => None,
         }
     }
 }
