@@ -1,3 +1,6 @@
+use std::io;
+use std::io::Read;
+
 #[derive(PartialEq, Debug)]
 pub enum Command {
     LeftShift,
@@ -24,7 +27,7 @@ pub fn get_command(token: &str) -> Option<Command> {
     }
 }
 
-pub enum Failure {
+pub enum CommandFailure {
     MemoryOverstep,
     ReadFailure,
     WriteFailure,
@@ -59,7 +62,7 @@ impl Tape {
         self.cells.get(index)
     }
 
-    pub fn process_token(&mut self, token: Command) -> Result<(), Failure> {
+    pub fn process_token(&mut self, token: Command) -> Result<(), CommandFailure> {
         const MAX_VALUE: u8 = 255;
         const MIN_VALUE: u8 = 0;
         match token {
@@ -85,7 +88,7 @@ impl Tape {
             }
             Command::LeftShift => {
                 if self.current_index() == 0 {
-                    Result::Err(Failure::MemoryUnderstep)
+                    Result::Err(CommandFailure::MemoryUnderstep)
                 } else {
                     self.pointer -= 1;
                     Result::Ok(())
@@ -93,16 +96,41 @@ impl Tape {
             }
             Command::RightShift => {
                 if self.pointer == self.cells.len() - 1 {
-                    Result::Err(Failure::MemoryOverstep)
+                    Result::Err(CommandFailure::MemoryOverstep)
                 } else {
                     self.pointer += 1;
                     Result::Ok(())
                 }
             }
-            Command::Read => Result::Ok(()),
+            Command::Read => {
+                let value = Self::read_byte();
+                match value {
+                    Some(value) => {
+                        self.store_byte(value);
+                        Result::Ok(())
+                    }
+                    None => Result::Err(CommandFailure::ReadFailure),
+                }
+            }
             Command::Write => Result::Ok(()),
             Command::LeftLoop => Result::Ok(()),
             Command::RightLoop => Result::Ok(()),
+        }
+    }
+
+    fn store_byte(&mut self, value: u8) {
+        self.cells[self.pointer] = value;
+    }
+
+    pub fn read_byte() -> Option<u8> {
+        let stdin = io::stdin();
+        let handle = stdin.lock();
+        let mut bytes = handle.bytes();
+        let input = bytes.nth(0);
+
+        match input {
+            Some(Ok(value)) => Some(value),
+            _ => None,
         }
     }
 }
