@@ -113,7 +113,16 @@ impl Tape {
                     None => Result::Err(CommandFailure::ReadFailure),
                 }
             }
-            Command::Write => Result::Ok(()),
+            Command::Write => {
+                // Print the value of the current cell as ASCII
+                print!("{}", self.cells[self.pointer] as char);
+
+                // Ensure that output is sent to console immediately
+                match io::stdout().flush() {
+                    Result::Ok(()) => Result::Ok(()),
+                    Result::Err(_) => Result::Err(CommandFailure::WriteFailure)
+                }
+            }
             Command::LeftLoop => Result::Ok(()),
             Command::RightLoop => Result::Ok(()),
         }
@@ -132,7 +141,6 @@ impl Tape {
         match reader.read_line(&mut buffer) {
             Ok(_) => {
                 let result = buffer.bytes().nth(0);
-
                 result
             }
             // Fix this stupidity
