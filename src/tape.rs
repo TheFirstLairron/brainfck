@@ -38,7 +38,16 @@ impl Tape {
     pub fn process_token(&mut self, token: Command) -> Result<(), Failure> {
         match token {
             Command::Increment => Result::Ok(()),
-            Command::Decrement => Result::Ok(()),
+            Command::Decrement => {
+                let mut value = self.cells[self.pointer];
+                if value == 0 {
+                    value = 255;
+                } else {
+                    value -= 1;
+                }
+                self.cells[self.pointer] = value;
+                Result::Ok(())
+            },
             Command::LeftShift => {
                 if self.current_index() == 0 {
                     Result::Err(Failure::MemoryUnderstep)
@@ -48,7 +57,7 @@ impl Tape {
                 }
             }
             Command::RightShift => {
-                if self.pointer == self.cells.len() {
+                if self.pointer == self.cells.len() - 1 {
                     Result::Err(Failure::MemoryOverstep)
                 } else {
                     self.pointer += 1;
@@ -66,6 +75,19 @@ impl Tape {
 #[cfg(test)]
 mod tape_tests {
     use super::*;
+
+    #[test]
+    fn test_decrement() {
+        // arrange
+        const RESULT: u8 = 255;
+        let mut tape = Tape::new();
+
+        // act
+        tape.process_token(Command::Decrement);
+
+        // assert
+        assert_eq!(RESULT, *tape.value_at_index(tape.current_index()).unwrap());
+    }
 
     #[test]
     fn right_shift_success() {
