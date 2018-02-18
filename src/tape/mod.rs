@@ -1,4 +1,28 @@
-use interpreter::Command;
+#[derive(PartialEq, Debug)]
+pub enum Command {
+    LeftShift,
+    RightShift,
+    Increment,
+    Decrement,
+    Read,
+    Write,
+    RightLoop,
+    LeftLoop,
+}
+
+pub fn get_command(token: &str) -> Option<Command> {
+    match token {
+        "<" => Some(Command::LeftShift),
+        ">" => Some(Command::RightShift),
+        "+" => Some(Command::Increment),
+        "-" => Some(Command::Decrement),
+        "," => Some(Command::Read),
+        "." => Some(Command::Write),
+        "[" => Some(Command::RightLoop),
+        "]" => Some(Command::LeftLoop),
+        _ => None,
+    }
+}
 
 pub enum Failure {
     MemoryOverstep,
@@ -48,7 +72,7 @@ impl Tape {
                 }
                 self.cells[self.pointer] = value;
                 Result::Ok(())
-            },
+            }
             Command::Decrement => {
                 let mut value = self.cells[self.pointer];
                 if value == MIN_VALUE {
@@ -58,7 +82,7 @@ impl Tape {
                 }
                 self.cells[self.pointer] = value;
                 Result::Ok(())
-            },
+            }
             Command::LeftShift => {
                 if self.current_index() == 0 {
                     Result::Err(Failure::MemoryUnderstep)
@@ -84,60 +108,4 @@ impl Tape {
 }
 
 #[cfg(test)]
-mod tape_tests {
-    use super::*;
-
-    #[test]
-    fn test_increment() {
-        // arrange
-        const RESULT: u8 = 1;
-        let mut tape = Tape::new();
-
-        // act
-        tape.process_token(Command::Increment);
-
-        // assert
-        assert_eq!(RESULT, *tape.value_at_index(tape.current_index()).unwrap());
-    }
-
-    #[test]
-    fn test_decrement() {
-        // arrange
-        const RESULT: u8 = 255;
-        let mut tape = Tape::new();
-
-        // act
-        tape.process_token(Command::Decrement);
-
-        // assert
-        assert_eq!(RESULT, *tape.value_at_index(tape.current_index()).unwrap());
-    }
-
-    #[test]
-    fn right_shift_success() {
-        const RESULT: usize = 1;
-        let mut tape = Tape::new();
-
-        tape.process_token(Command::RightShift);
-
-        assert_eq!(RESULT, tape.current_index());
-    }
-
-    #[test]
-    fn left_shift_success() {
-        const RESULT: usize = 0;
-        let mut tape = Tape::new();
-
-        tape.process_token(Command::RightShift);
-        tape.process_token(Command::LeftShift);
-
-        assert_eq!(RESULT, tape.current_index());
-    }
-
-    #[test]
-    fn left_shift_failure() {
-        let mut tape = Tape::new();
-
-        assert!(tape.process_token(Command::LeftShift).is_err());
-    }
-}
+mod test;
