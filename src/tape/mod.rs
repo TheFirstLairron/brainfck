@@ -123,7 +123,7 @@ impl Tape {
         self.cells[self.pointer] = value;
     }
 
-    pub fn read_byte() -> Option<u8> {
+    fn read_byte() -> Option<u8> {
         let mut buffer = String::new();
 
         let stdin = io::stdin();
