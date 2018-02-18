@@ -36,12 +36,23 @@ impl Tape {
     }
 
     pub fn process_token(&mut self, token: Command) -> Result<(), Failure> {
+        const MAX_VALUE: u8 = 255;
+        const MIN_VALUE: u8 = 0;
         match token {
-            Command::Increment => Result::Ok(()),
+            Command::Increment => {
+                let mut value = self.cells[self.pointer];
+                if value == MAX_VALUE {
+                    value = MIN_VALUE;
+                } else {
+                    value += 1;
+                }
+                self.cells[self.pointer] = value;
+                Result::Ok(())
+            },
             Command::Decrement => {
                 let mut value = self.cells[self.pointer];
-                if value == 0 {
-                    value = 255;
+                if value == MIN_VALUE {
+                    value = MAX_VALUE;
                 } else {
                     value -= 1;
                 }
@@ -75,6 +86,19 @@ impl Tape {
 #[cfg(test)]
 mod tape_tests {
     use super::*;
+
+    #[test]
+    fn test_increment() {
+        // arrange
+        const RESULT: u8 = 1;
+        let mut tape = Tape::new();
+
+        // act
+        tape.process_token(Command::Increment);
+
+        // assert
+        assert_eq!(RESULT, *tape.value_at_index(tape.current_index()).unwrap());
+    }
 
     #[test]
     fn test_decrement() {
