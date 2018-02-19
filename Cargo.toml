@@ -1,6 +1,6 @@
 [package]
 name = "rustfuck"
 version = "0.1.0"
-authors = ["TheFirstLairron <zrwall@hotmail.com>"]
+authors = ["TheFirstLairron <zrwall@hotmail.com>", "ozyx <jessemazzella@gmail.com>"]
 
 [dependencies]
