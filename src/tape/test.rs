@@ -1,6 +1,15 @@
 use super::*;
 
 #[test]
+fn test_data_storage() {
+    const VALUE: u8 = 200;
+    let mut tape = Tape::new();
+
+    tape.store_byte(VALUE);
+    assert_eq!(*tape.value_at_index(tape.current_index()).unwrap(), VALUE);
+}
+
+#[test]
 fn test_increment() {
     // arrange
     const RESULT: u8 = 1;
